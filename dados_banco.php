@@ -2,6 +2,6 @@
 $servername = "127.0.0.1";
 $username = "root";
 $password = "";
-$dbname="logins";
+$dbname="album_da_copa";
 
 ?>

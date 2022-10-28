@@ -1,43 +1,3 @@
-<?php
-
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    
-    $idfigurinha = $_POST['id'];
-    $nomesalvo = $_POST['nome'];
-    $selecao = $_POST['selecao'];
-}
-
-function validar_post($dado_enviado){
-    if(isset($dado_enviado) and $dado_enviado <> ""){
-        return TRUE;
-    }
-        return FALSE;
-}
-
-    
-require_once('dados_banco.php');
-
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-$sql = "INSERT INTO figurinhas (ID, Nome, Selecao)
-VALUES ('$idfigurinha','$nomesalvo','$selecao')";
-
-echo "<br>";
-
-if (mysqli_query($conn, $sql)) {
-    //echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-}
-
-mysqli_close($conn);
-
-
-?>
-
 <!DOCTYPE html>
 <html lang="pt_BR">
 <head>
@@ -55,7 +15,7 @@ mysqli_close($conn);
         <h1>Cadastro de Figurinhas</h1>
         <br><br>
         <p>Favor inserir ID da Figurinha, Nome e Seleção do Jogador.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <div class="form-group">
                 <br><br>
                 <label>ID</label>
@@ -77,6 +37,54 @@ mysqli_close($conn);
             </div>
         </form>
     </div>    
+
+    <?php
+   
+   session_start();
+
+   if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+       header("location: index.php");
+       exit;
+   }
+   
+
+require_once('./dados_banco.php');
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+if(isset($_POST['id']) && ($_POST['nome']) && ($_POST['selecao']))
+{
+$idfigurinha = ($_POST['id']);
+$nomesalvo = ($_POST['nome']);
+$selecao = ($_POST['selecao']);
+
+
+
+$sql = "INSERT INTO figurinhas (ID, Nome, Selecao)
+VALUES ('$idfigurinha','$nomesalvo','$selecao')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+
+/*if (mysqli_query($conn, $sql)) {
+    //echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
+*/
+}
+
+?>
 
 </body>
 </html>
